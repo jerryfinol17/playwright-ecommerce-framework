@@ -27,6 +27,9 @@ export class HomePage extends BasePage {
    async start(){
        await super.goto(BASE_URL)
    }
+   async isOnHomePage(): Promise<boolean>{
+       return this.assertCurrentUrlContain(BASE_URL);
+   }
    async goToSignUpLogin(): Promise<void> {
        await this.clickElement(this.signupLoginLink);
    }
@@ -93,7 +96,4 @@ export class HomePage extends BasePage {
     async continueShopping(): Promise<void> {
        await this.clickElement(this.continueShoppingBtn);
     }
-
-
-
 }
