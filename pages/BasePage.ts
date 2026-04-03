@@ -99,4 +99,56 @@ export abstract class BasePage {
         const timeStamp = new Date().toISOString().replace(/[:.]/g,'-');
         await this.page.screenshot({path: `reports/screenshots/${name}-${timeStamp}.png`});
     }
+
+    // ===== Close adds =====================
+    async closeAnyAds(): Promise<void> {
+        try {
+            console.log('🔍 Buscando anuncios...');
+
+            const strategies = [
+                () => this.page
+                    .locator('iframe[name*="aswift"]')
+                    .contentFrame()
+                    .getByRole('button', { name: 'Close ad' })
+                    .first(),
+
+                () => this.page
+                    .locator('iframe[name*="aswift"]')
+                    .contentFrame()
+                    .getByRole('button', { name: 'Close' })
+                    .first(),
+
+                () => this.page
+                    .locator('iframe[name*="aswift"]')
+                    .contentFrame()
+                    .locator('iframe[name="ad_iframe"]')
+                    .contentFrame()
+                    .getByRole('button', { name: /Close|Dismiss/i })
+                    .first(),
+
+                () => this.page.locator('button[aria-label*="Close ad"], button[aria-label*="close"]').first(),
+
+                () => this.page.getByRole('button', { name: /Close|Dismiss|×|✕/i }).first(),
+            ];
+
+            for (const getLocator of strategies) {
+                const closeBtn = getLocator();
+
+                const isVisible = await closeBtn.isVisible({ timeout: 2500 }).catch(() => false);
+
+                if (isVisible) {
+                    console.log('🛡️  Anuncio detectado → cerrándolo...');
+                    await closeBtn.click({ force: true, timeout: 6000 });
+                    await this.page.waitForTimeout(1200);
+                    return;
+                }
+            }
+
+            console.log('ℹ️  No se encontró ningún anuncio');
+
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            console.error('⚠️  Error al intentar cerrar anuncio (no crítico):', message);
+        }
+    }
 }
