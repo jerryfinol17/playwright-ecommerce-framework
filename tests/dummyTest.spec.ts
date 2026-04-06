@@ -1,6 +1,7 @@
 import {test,expect} from "@playwright/test";
 import {HomePage} from "../pages/HomePage";
 import {ProductPage} from "../pages/ProductsPage";
+import {LoginPage} from "../pages/LoginPage";
 
 test('gotoSingup', async ({page}) => {
     const home = new HomePage(page)
@@ -44,4 +45,54 @@ test('products page', async ({page}) => {
     const name = await products.getSearchResultNames()
     console.log(name)
 
+})
+test('login page', async ({page}) => {
+    const home = new HomePage(page)
+    const login = new LoginPage(page)
+    await home.start()
+    await home.goToSignUpLogin()
+    await expect(login.isOnLoginPage()).resolves.toBe(true)
+    await login.signupNewUser('laufeyFan', 'LaufeyFan@gmail.com')
+    await expect(login.isOnSingUpPage()).resolves.toBe(true)
+    await login.fillAccountCreationForm({title:'Mr.',
+        password: 'LaufeyIsTheBest',
+        day: '24',
+        month: '9',
+        year: '2000',
+        firstName: 'laufeyFan',
+        lastName: 'JuniaFan',
+        address1: '123 example plc',
+        country: 'United States',
+        state: 'oklahoma ',
+        city: 'Laufeyland',
+        zipcode: '1235',
+        mobile: '13245643144',
+        newsletter: true})
+    await login.clickCreateAccount()
+    await expect(login.isOnCreatedPage()).resolves.toBe(true)
+    await expect(login.expectAccountCreatedSuccess()).resolves.toBe(true)
+    await login.clickContinueAfterAccountCreated()
+    await expect(home.isOnHomePage()).resolves.toBe(true)
+})
+test('login', async ({page}) => {
+    const home = new HomePage(page)
+    const login = new LoginPage(page)
+    await home.start()
+    await home.goToSignUpLogin()
+    await expect(login.isOnLoginPage()).resolves.toBe(true)
+    await login.createNewUserFullFlow('beautiful Stranger', 'Laufey@gmail.com', {title:'Mr.',
+        password: 'LaufeyIsTheBest',
+        day: '24',
+        month: '9',
+        year: '2000',
+        firstName: 'laufeyFan',
+        lastName: 'JuniaFan',
+        address1: '123 example plc',
+        country: 'United States',
+        state: 'oklahoma ',
+        city: 'Laufeyland',
+        zipcode: '1235',
+        mobile: '13245643144',
+        newsletter: true})
+    await expect(home.isOnHomePage()).resolves.toBe(true)
 })
