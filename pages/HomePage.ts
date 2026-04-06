@@ -20,9 +20,6 @@ export class HomePage extends BasePage {
     private readonly menCategory   = this.page.getByRole('link', { name: ' Men' });
     private readonly kidsCategory  = this.page.getByRole('link', { name: ' Kids' });
 
-    // ==================== MODALS / POPUPS ====================
-    private readonly continueShoppingBtn = this.page.getByRole('button', { name: 'Continue Shopping' });
-
     // =========HEADER ACTIONS====================
    async start(){
        await super.goto(BASE_URL)
@@ -77,23 +74,4 @@ export class HomePage extends BasePage {
         }
     }
 
-
-    //========= INVENTORY ACTIONS===============================
-
-    async addToCart(productName: string): Promise<void> {
-        const productCard = this.page.locator('.productinfo').filter({ hasText: productName }).first();
-        await productCard.hover();
-        await productCard.locator('a.add-to-cart').click();
-    }
-    async isContinueBtnVisible(): Promise<boolean> {
-        try {
-            await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 3000 });
-            return true;
-        } catch {
-            return false;
-        }
-    }
-    async continueShopping(): Promise<void> {
-       await this.clickElement(this.continueShoppingBtn);
-    }
 }

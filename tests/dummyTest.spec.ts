@@ -2,6 +2,7 @@ import {test,expect} from "@playwright/test";
 import {HomePage} from "../pages/HomePage";
 import {ProductPage} from "../pages/ProductsPage";
 import {LoginPage} from "../pages/LoginPage";
+import {CartPage} from "../pages/CartPage";
 
 test('gotoSingup', async ({page}) => {
     const home = new HomePage(page)
@@ -25,16 +26,6 @@ test('click Categories', async ({page}) => {
     await expect(home.isCategoryExpanded('Kids')).resolves.toBe(true)
     await home.assertOnlyOneCategoryExpanded('Kids')
 })
-test('add a product', async ({page}) => {
-    const home = new HomePage(page)
-    await home.start()
-    await home.addToCart('Blue Top')
-    await expect(home.isContinueBtnVisible()).resolves.toBe(true)
-    await home.continueShopping()
-    await expect(home.isContinueBtnVisible()).resolves.toBe(false)
-})
-//VAMOOOOO  CARAJOOOOOOOOOO
-
 test('products page', async ({page}) => {
     const home = new HomePage(page)
     const products = new ProductPage(page)
@@ -95,4 +86,46 @@ test('login', async ({page}) => {
         mobile: '13245643144',
         newsletter: true})
     await expect(home.isOnHomePage()).resolves.toBe(true)
+})
+test('cart page', async ({page}) => {
+    const home = new HomePage(page)
+    const login = new LoginPage(page)
+    const cart = new CartPage(page)
+    const products = new ProductPage(page)
+    await home.start()
+    await home.goToSignUpLogin()
+    await expect(login.isOnLoginPage()).resolves.toBe(true)
+    await login.loginWithExistingUser('tutia@gmail.com','tutia')
+    await expect(home.isOnHomePage()).resolves.toBe(true)
+    await products.addToCartByName('Blue Top')
+    await products.continueShopping()
+    await home.goToCart()
+    await expect(cart.isOnCartPage()).resolves.toBe(true)
+    await expect(cart.expectCartEmpty()).resolves.toBe(false)
+    const items =  await cart.getCartItems()
+    const total = await cart.getTotalAmount()
+    const itemCount = await  cart.getItemCount()
+    const price = await cart.getItemPrice('Blue Top')
+    console.log(itemCount, total, items, price)
+    await cart.proceedToCheckout()
+    await expect(cart.isOnCheckoutPage()).resolves.toBe(true)
+    const delivery = await cart.getDeliveryAddress()
+    const billing = await cart.getBillingAddress()
+    console.log(delivery, billing)
+    await cart.addOrderComment('Hola, y gracias')
+    await cart.placeOrder()
+    await expect(cart.isOnPaymentPage()).resolves.toBe(true)
+    await cart.fillPaymentDetails('a','a','a','a','a')
+    await cart.payAndConfirmOrder()
+    await expect(cart.isOnOrderConfirmedPage()).resolves.toBe(true)
+    await expect(cart.expectOrderPlacedSuccess()).resolves.toBe(true)
+    await cart.downloadInvoice()
+    await cart.clickContinueAfterOrder()
+    await expect(home.isOnHomePage()).resolves.toBe(true)
+    await products.addToCartByName('Blue Top')
+    await products.continueShopping()
+    await home.goToCart()
+    await expect(cart.isOnCartPage()).resolves.toBe(true)
+    await cart.removeItemByName('Blue Top')
+    await expect(cart.expectCartEmpty()).resolves.toBe(true)
 })

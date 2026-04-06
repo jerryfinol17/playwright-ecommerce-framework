@@ -114,6 +114,14 @@ export class ProductPage extends BasePage {
     async continueShopping(): Promise<void> {
         await this.clickElement(this.continueShoppingBtn);
     }
+    async isContinueBtnVisible(): Promise<boolean> {
+        try {
+            await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 3000 });
+            return true;
+        } catch {
+            return false;
+        }
+    }
 
     // ==================== REVIEWS ====================
 
