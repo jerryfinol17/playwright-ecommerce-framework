@@ -48,6 +48,10 @@ export class LoginPage extends BasePage {
 
     // Logout
     private readonly logout = this.page.getByRole('link', { name: ' Logout' })
+
+    //Delete
+    private  readonly deleteAccount = this.page.getByRole('link', { name: ' Delete Account' });
+    private readonly deleteAccountMsg = this.page.getByText('Account Deleted!');
     // ==================== URL ASSERTIONS ====================
     async isOnLoginPage(): Promise<boolean> {
         return this.assertCurrentUrlContain('login');
@@ -77,9 +81,21 @@ export class LoginPage extends BasePage {
         }
     }
 
-    // ================= LOGOUT ==========================
+    // ================= LOGOUT && DELETE ==========================
     async clickLogout(): Promise<void> {
         await this.clickElement(this.logout)
+    }
+
+    async clickDeleteAccount(): Promise<void> {
+        await this.clickElement(this.deleteAccount)
+    }
+    async expectAccountDeleted():Promise<boolean>{
+        try {
+            await this.deleteAccountMsg.waitFor({ state: 'visible', timeout: 10000 });
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     // ==================== SIGNUP INICIAL ====================
