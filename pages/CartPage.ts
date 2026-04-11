@@ -31,7 +31,7 @@ export class CartPage extends BasePage {
     private readonly expiryMonth      = this.page.getByRole('textbox', { name: 'MM' });
     private readonly expiryYear       = this.page.getByRole('textbox', { name: 'YYYY' });
     private readonly payAndConfirmBtn = this.page.getByRole('button', { name: 'Pay and Confirm Order' });
-    private readonly continueBtn      = this.page.locator('div').filter({ hasText: /^Continue$/ });
+    private readonly continueBtn = this.page.getByRole('link', { name: 'Continue', exact: true });
 
     // ==================== URL ASSERTIONS ====================
     async isOnCartPage(): Promise<boolean> {
@@ -58,7 +58,7 @@ export class CartPage extends BasePage {
         for (const row of rows) {
             const name     = await row.locator('td:nth-child(2) a').textContent() || '';
             const price    = await row.locator('td:nth-child(3)').textContent() || '';
-            const quantity = await row.locator('td:nth-child(4) button').textContent() || ''; // ✅ sin .cart_quantity
+            const quantity = await row.locator('td:nth-child(4) button').textContent() || '';
             const total    = await row.locator('td:nth-child(5)').textContent() || '';
 
             if (name.trim()) {
@@ -87,6 +87,7 @@ export class CartPage extends BasePage {
         const row = this.cartRows.filter({ hasText: productName });
         return await row.locator('td:nth-child(3)').innerText();
     }
+
     // ==================== ACCIONES EN EL CARRITO ====================
     async removeItemByName(productName: string): Promise<void> {
         const row = this.cartRows.filter({ hasText: productName });
@@ -134,8 +135,8 @@ export class CartPage extends BasePage {
         await this.payAndConfirmBtn.click();
     }
 
-    // =============== COMPLETE ==================
     async clickContinueAfterOrder(): Promise<void> {
+        await this.continueBtn.waitFor({ state: 'visible', timeout: 15000 });
         await this.continueBtn.click();
     }
 
@@ -175,6 +176,7 @@ export class CartPage extends BasePage {
         await this.downloadInvoice();
         await this.clickContinueAfterOrder();
     }
+
     async getDeliveryAddress(): Promise<string> {
         return await this.page.locator('#address_delivery').innerText();
     }

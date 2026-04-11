@@ -9,7 +9,7 @@ export class ProductsPage extends BasePage {
 
     // ==================== LOCATORS FIJOS ====================
     private readonly quantityInput       = this.page.locator('#quantity');
-    private readonly addToCartButton     = this.page.getByRole('button', { name: ' Add to cart' })
+    private readonly addToCartButton     = this.page.getByRole('button', { name: ' Add to cart' });
     private readonly continueShoppingBtn = this.page.getByRole('button', { name: 'Continue Shopping' });
 
     // Review section
@@ -20,7 +20,7 @@ export class ProductsPage extends BasePage {
 
     // ==================== PRODUCT DETAIL LOCATORS ====================
     private readonly productTitle     = this.page.locator('.product-information h2');
-    private readonly productPrice     = this.page.locator('.product-information span span'); // ✅ corregido
+    private readonly productPrice     = this.page.locator('.product-information span span');
 
     private readonly brandText        = this.page.locator('.product-information p').filter({ hasText: 'Brand' });
     private readonly availabilityText = this.page.locator('.product-information p').filter({ hasText: 'Availability' });
@@ -38,22 +38,23 @@ export class ProductsPage extends BasePage {
 
     async goToProductByName(productName: string): Promise<void> {
         const viewProductLink = this.page.locator('.product-image-wrapper')
-            .filter({hasText: productName})
+            .filter({ hasText: productName })
             .locator('a[href*="product_details"]')
             .first();
 
-        await viewProductLink.waitFor({state: 'visible', timeout: 10000});
+        await viewProductLink.waitFor({ state: 'visible', timeout: 10000 });
         await viewProductLink.click();
     }
+
     // ==================== LISTA DE PRODUCTOS ====================
 
     async getAllProductNames(): Promise<string[]> {
-        const names = await this.page.locator('.productinfo p').allInnerTexts(); // ✅ corregido
+        const names = await this.page.locator('.productinfo p').allInnerTexts();
         return names.map(name => name.trim()).filter(Boolean);
     }
 
     async getAllProductPrices(): Promise<string[]> {
-        const prices = await this.page.locator('.productinfo h2').allInnerTexts(); // ✅ h2 son los precios
+        const prices = await this.page.locator('.productinfo h2').allInnerTexts();
         return prices.map(price => price.trim()).filter(Boolean);
     }
 
@@ -74,7 +75,7 @@ export class ProductsPage extends BasePage {
     }
 
     async getSearchResultNames(): Promise<string[]> {
-        const names = await this.page.locator('.productinfo p').allInnerTexts(); // ✅ corregido
+        const names = await this.page.locator('.productinfo p').allInnerTexts();
         return names.map(n => n.trim()).filter(Boolean);
     }
 
@@ -112,11 +113,14 @@ export class ProductsPage extends BasePage {
     }
 
     async continueShopping(): Promise<void> {
-        await this.clickElement(this.continueShoppingBtn);
+        await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 15000 });
+        await this.continueShoppingBtn.click({ force: true });
+        await this.continueShoppingBtn.waitFor({ state: 'hidden', timeout: 8000 });
     }
+
     async isContinueBtnVisible(): Promise<boolean> {
         try {
-            await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 3000 });
+            await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 15000 });
             return true;
         } catch {
             return false;

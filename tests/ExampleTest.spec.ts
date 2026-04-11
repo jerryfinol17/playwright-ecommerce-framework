@@ -1,4 +1,5 @@
 import {test, expect} from "./fixtures";
+import {NEW_USER} from "../pages/config";
 
 test('HomePage', async ({homePage}) => {
     await homePage.start();
@@ -82,11 +83,27 @@ test('LoginPage', async ({homePage,loginPage}) => {
     await expect(loginPage.expectEmptyFormDoesNotSubmit()).resolves.toBe(true);
 })
 test('cart page', async ({homePage, loginPage, productsPage, cartPage}) => {
+    const UNIQUE_EMAIL = `example_${Date.now()}@test.com`;
     await homePage.start()
     await homePage.goToSignUpLogin()
     await expect(loginPage.isOnLoginPage()).resolves.toBe(true)
-    await loginPage.loginWithExistingUser('tutia@gmail.com','tutia')
+    await loginPage.createNewUserFullFlow('Juan Carlos', UNIQUE_EMAIL,{title:'Mr.',
+        password: 'Viva 31 minutos!',
+        day: NEW_USER.new_user_day,
+        month: NEW_USER.new_user_month,
+        year: NEW_USER.new_user_year,
+        firstName: NEW_USER.new_user_first_name,
+        lastName: NEW_USER.new_user_last_name,
+        address1: NEW_USER.new_user_address1,
+        country: NEW_USER.new_user_country,
+        state: NEW_USER.new_user_state,
+        city: NEW_USER.new_user_city,
+        zipcode: NEW_USER.new_user_zipcode,
+        mobile: NEW_USER.new_user_mobile,
+        newsletter: true,
+        specialOffers: true,})
     await expect(homePage.isOnHomePage()).resolves.toBe(true)
+    await homePage.goToProducts()
     await productsPage.addToCartByName('Blue Top')
     await productsPage.continueShopping()
     await homePage.goToCart()
