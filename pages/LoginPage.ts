@@ -46,6 +46,8 @@ export class LoginPage extends BasePage {
     private readonly loginErrorMsg  = this.page.getByText('Your email or password is incorrect!');
     private readonly signupErrorMsg = this.page.getByText('Email Address already exist!');
 
+    // Logout
+    private readonly logout = this.page.getByRole('link', { name: ' Logout' })
     // ==================== URL ASSERTIONS ====================
     async isOnLoginPage(): Promise<boolean> {
         return this.assertCurrentUrlContain('login');
@@ -75,6 +77,11 @@ export class LoginPage extends BasePage {
         }
     }
 
+    // ================= LOGOUT ==========================
+    async clickLogout(): Promise<void> {
+        await this.clickElement(this.logout)
+    }
+
     // ==================== SIGNUP INICIAL ====================
     async signupNewUser(name: string, email: string): Promise<void> {
         await this.signupName.fill(name);
@@ -89,6 +96,14 @@ export class LoginPage extends BasePage {
         } catch {
             return false;
         }
+    }
+    async cleanSignupFields(): Promise<void> {
+        await this.signupName.clear();
+        await this.signupEmail.clear();
+    }
+    async cleanLoginFields(): Promise<void> {
+        await this.loginEmail.clear();
+        await this.loginPassword.clear();
     }
 
     // ==================== FORMULARIO DE CUENTA ====================

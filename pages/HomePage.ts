@@ -13,6 +13,7 @@ export class HomePage extends BasePage {
     private readonly cartLink        = this.page.getByRole('link', { name: ' Cart' });
     private readonly contactUsLink   = this.page.getByRole('link', { name: ' Contact us' });
     private readonly deleteAccountLink = this.page.getByRole('link', { name: ' Delete Account' });
+    private readonly homeLink = this.page.getByRole('link', { name: ' Home' });
 
 
     // ==================== CATEGORIES ====================
@@ -41,6 +42,9 @@ export class HomePage extends BasePage {
    }
    async deleteAccount(): Promise<void> {
        await this.clickElement(this.deleteAccountLink);
+   }
+   async gotoHome(): Promise<void> {
+       await this.clickElement(this.homeLink);
    }
    //======== CATEGORIES ACTIONS ==================
     async clickWomenCategory(): Promise<void> {
