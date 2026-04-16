@@ -23,6 +23,7 @@ export class CartPage extends BasePage {
     // Tabla del carrito
     private readonly cartTable = this.page.locator('#cart_info_table');
     private readonly cartRows  = this.cartTable.locator('tbody tr');
+    private readonly goToSingup = this.page.getByRole('link', { name: 'Register / Login' })
 
     // Payment
     private readonly nameOnCard       = this.page.locator('input[name="name_on_card"]');
@@ -104,6 +105,9 @@ export class CartPage extends BasePage {
     }
 
     // ==================== CHECKOUT FLOW ====================
+    async goToSingUpFromCart(): Promise<void> {
+        await this.clickElement(this.goToSingup)
+    }
     async proceedToCheckout(): Promise<void> {
         await this.proceedToCheckoutButton.click();
     }

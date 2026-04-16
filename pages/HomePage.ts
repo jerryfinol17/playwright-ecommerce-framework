@@ -8,16 +8,33 @@ export class HomePage extends BasePage {
     }
 
     // ==================== HEADER ====================
-    private readonly signupLoginLink   = this.page.getByRole('link', { name: ' Signup / Login' });
-    private readonly productsLink      = this.page.getByRole('link', { name: ' Products' });
-    private readonly cartLink          = this.page.getByRole('link', { name: ' Cart' });
-    private readonly contactUsLink     = this.page.getByRole('link', { name: ' Contact us' });
-    private readonly homeLink          = this.page.getByRole('link', { name: ' Home' });
-
+    private readonly signupLoginLink = this.page.locator('#header a[href="/login"]');
+    private readonly productsLink    = this.page.locator('#header a[href="/products"]');
+    private readonly cartLink        = this.page.locator('#header a[href="/view_cart"]');
+    private readonly contactUsLink   = this.page.locator('#header a[href="/contact_us"]');
+    private readonly homeLink        = this.page.locator('#header a[href="/"]').first();
+    private readonly testCases       = this.page.locator('#header a[href="/test_cases"]');
 
     private readonly womenCategory = this.page.locator('a[href="#Women"][data-toggle="collapse"]');
     private readonly menCategory   = this.page.locator('a[href="#Men"][data-toggle="collapse"]');
     private readonly kidsCategory  = this.page.locator('a[href="#Kids"][data-toggle="collapse"]');
+
+    // ================= FOOTER =============================
+    private readonly newsletterEmail     = this.page.getByRole('textbox', { name: 'Your email address' });
+    private readonly subscribeButton     = this.page.locator('#subscribe');
+    private readonly subscribeSuccessMsg = this.page.getByText('You have been successfully');
+
+    // ==================== CONTACT US ====================
+    private readonly contactUsGetInTouchTitle = this.page.getByRole('heading', { name: 'Get In Touch' });
+    private readonly contactUsName            = this.page.getByRole('textbox', { name: 'Name' });
+    private readonly contactUsEmail           = this.page.getByRole('textbox', { name: 'Email', exact: true });
+    private readonly contactUsSubject         = this.page.getByRole('textbox', { name: 'Subject' });
+    private readonly contactUsMessage         = this.page.getByRole('textbox', { name: 'Your Message Here' });
+    private readonly contactUsFileUpload      = this.page.getByRole('button', { name: 'Choose File' });
+    private readonly contactUsSubmitBtn       = this.page.getByRole('button', { name: 'Submit' });
+    private readonly contactUsSuccessMsg      = this.page.locator('#contact-page').getByText('Success! Your details have');
+    private readonly contactUsHomeLink = this.page.locator('#contact-page').getByRole('link', { name: ' Home' });
+
 
     // ==================== HEADER ACTIONS ====================
     async start() {
@@ -29,26 +46,41 @@ export class HomePage extends BasePage {
     }
 
     async goToSignUpLogin(): Promise<void> {
-        await this.clickElement(this.signupLoginLink);
+        await this.clickAndWaitForNavigation(this.signupLoginLink);
     }
 
     async goToProducts(): Promise<void> {
-        await this.clickElement(this.productsLink);
+        await this.clickAndWaitForNavigation(this.productsLink);
     }
 
     async goToCart(): Promise<void> {
-        await this.clickElement(this.cartLink);
+        await this.clickAndWaitForNavigation(this.cartLink);
     }
 
     async goToContactUs(): Promise<void> {
-        await this.clickElement(this.contactUsLink);
+        await this.clickAndWaitForNavigation(this.contactUsLink);
     }
 
 
     async gotoHome(): Promise<void> {
-        await this.clickElement(this.homeLink);
+        await this.clickAndWaitForNavigation(this.homeLink);
     }
+    async gotoTestCases(): Promise<void> {
+        await this.clickAndWaitForNavigation(this.testCases)
+    }
+    async isOnTestCasesPage(): Promise<boolean> {
+        return this.assertCurrentUrlContain('test_cases');
+    }
+    private readonly loggedInAs = this.page.locator('#header').getByText(/Logged in as/i);
 
+    async isLoggedIn(): Promise<boolean> {
+        try {
+            await this.loggedInAs.waitFor({ state: 'visible', timeout: 5000 });
+            return true;
+        } catch {
+            return false;
+        }
+    }
     // ==================== CATEGORIES ACTIONS ====================
 
     private async clickCategoryWithRetry(
@@ -88,6 +120,45 @@ export class HomePage extends BasePage {
     async clickKidsCategory(): Promise<void> {
         await this.clickCategoryWithRetry(this.kidsCategory, '#Kids .panel-body');
     }
+    // ==================== SUBCATEGORIES ====================
+    private getCategoryLink(category: 'Women' | 'Men' | 'Kids') {
+        const map = {
+            Women: this.womenCategory,
+            Men:   this.menCategory,
+            Kids:  this.kidsCategory,
+        };
+        return map[category];
+    }
+
+    private getSubCategoryLink(name: string) {
+        return this.page.getByRole('link', { name });
+    }
+
+    private getCategoryPageHeading(heading: string) {
+        return this.page.getByRole('heading', { name: heading });
+    }
+
+    async clickSubCategory(
+        category: 'Women' | 'Men' | 'Kids',
+        subCategory: string
+    ): Promise<void> {
+        await this.clickCategoryWithRetry(
+            this.getCategoryLink(category),
+            `#${category} .panel-body`
+        );
+        await this.clickElement(this.getSubCategoryLink(subCategory));
+        await this.waitForPageLoad();
+    }
+
+    async isCategoryPageHeadingVisible(heading: string): Promise<boolean> {
+        try {
+            await this.getCategoryPageHeading(heading)
+                .waitFor({ state: 'visible', timeout: 8000 });
+            return true;
+        } catch {
+            return false;
+        }
+    }
 
     // ==================== CATEGORIES ASSERTIONS ====================
     async isCategoryExpanded(category: 'Women' | 'Men' | 'Kids'): Promise<boolean> {
@@ -110,5 +181,50 @@ export class HomePage extends BasePage {
                 await expect(locator).toBeHidden();
             }
         }
+    }
+    async subscribeToNewsletter(email: string): Promise<void> {
+        await this.newsletterEmail.fill(email);
+        await this.subscribeButton.click();
+    }
+
+    async isSubscribeSuccessVisible(): Promise<boolean> {
+        try {
+            await this.subscribeSuccessMsg.waitFor({ state: 'visible', timeout: 5000 });
+            return true;
+        } catch {
+            return false;
+        }
+    }
+    async fillContactForm(
+        name: string,
+        email: string,
+        subject: string,
+        message: string,
+        filePath: string
+    ): Promise<void> {
+        await this.waitForVisible(this.contactUsGetInTouchTitle);
+        await this.contactUsName.fill(name);
+        await this.contactUsEmail.fill(email);
+        await this.contactUsSubject.fill(subject);
+        await this.contactUsMessage.fill(message);
+        await this.contactUsFileUpload.setInputFiles(filePath);
+    }
+
+    async submitContactForm(): Promise<void> {
+        this.page.once('dialog', dialog => dialog.accept());
+        await this.contactUsSubmitBtn.click();
+    }
+
+    async isContactSuccessVisible(): Promise<boolean> {
+        try {
+            await this.contactUsSuccessMsg.waitFor({ state: 'visible', timeout: 5000 });
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    async goHomeFromContact(): Promise<void> {
+        await this.clickAndWaitForNavigation(this.contactUsHomeLink);
     }
 }

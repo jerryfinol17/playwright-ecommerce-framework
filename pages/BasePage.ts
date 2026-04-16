@@ -94,6 +94,17 @@ export abstract class BasePage {
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForTimeout(800);
     }
+    // BasePage.ts
+
+    protected async clickAndWaitForNavigation(
+        locator: string | Locator,
+        options: { force?: boolean; timeout?: number } = {}
+    ): Promise<void> {
+        await Promise.all([
+            this.page.waitForNavigation({ waitUntil: 'networkidle', timeout: options.timeout ?? 15000 }),
+            this.clickElement(locator, options)
+        ]);
+    }
 
     // ============== Evidence =========================
     async takeScreenshot(name: string): Promise<void> {
@@ -112,9 +123,25 @@ export abstract class BasePage {
                 'adservice.google',
                 'google_vignette',
                 'pagead2',
+                'googletagmanager',
+                'googletagservices',
+                'adnxs',
+                'amazon-adsystem',
+                'adsafeprotected',
+                'moatads',
+                'rubiconproject',
+                'openx',
+                'pubmatic',
+                'criteo',
+                'taboola',
+                'outbrain',
+                'scorecardresearch',
+                'quantserve',
+                '/ads/',
+                'popads',
+                'popcash',
             ].some(domain => url.includes(domain));
 
             isAd ? route.abort() : route.continue();
-        });
-    }
+        });}
 }

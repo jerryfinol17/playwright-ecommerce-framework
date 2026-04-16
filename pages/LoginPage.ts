@@ -69,7 +69,7 @@ export class LoginPage extends BasePage {
     async loginWithExistingUser(email: string, password: string): Promise<void> {
         await this.loginEmail.fill(email);
         await this.loginPassword.fill(password);
-        await this.loginButton.click();
+        await this.clickElement(this.loginButton);
     }
 
     async expectLoginError(): Promise<boolean> {
@@ -102,7 +102,7 @@ export class LoginPage extends BasePage {
     async signupNewUser(name: string, email: string): Promise<void> {
         await this.signupName.fill(name);
         await this.signupEmail.fill(email);
-        await this.signupButton.click();
+        await this.clickElement(this.signupButton);
     }
 
     async expectSignupError(): Promise<boolean> {

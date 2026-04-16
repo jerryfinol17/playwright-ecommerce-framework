@@ -6,6 +6,8 @@ test('HomePage', async ({homePage}) => {
     await homePage.goToSignUpLogin();
     await homePage.goToProducts();
     await homePage.goToCart();
+    await homePage.gotoTestCases()
+    await expect(homePage.isOnTestCasesPage()).resolves.toBe(true);
     await homePage.goToContactUs();
     await homePage.gotoHome();
     await homePage.clickWomenCategory();
