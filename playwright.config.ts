@@ -8,9 +8,9 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 4 : 4,
     outputDir: 'test-results',
-    timeout: 90_000,        // 90s para todos los tests
+    timeout: 90_000,
     expect: {
-        timeout: 15_000,    // 15s para cada assertion
+        timeout: 15_000,
     },
 
     reporter: [
