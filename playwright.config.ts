@@ -19,7 +19,6 @@ export default defineConfig({
             name: "Coverage Report",
             outputFile: './coverage-report/index.html',
             coverage: {
-                reports: ['v8', 'console-details'],
                 outputDir: './coverage-report'
             }
         }]
