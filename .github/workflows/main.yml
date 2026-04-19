@@ -44,7 +44,6 @@ jobs:
         env:
           CI: "true"
 
-      # ==================== ARTIFACTS ====================
       - name: Upload HTML Report - ${{ matrix.project }}
         if: always()
         uses: actions/upload-artifact@v4
@@ -71,5 +70,6 @@ jobs:
             videos/
             screenshots/
           retention-days: 14
+
       - name: Debug - List test files
         run: find . -name "*.spec.ts" -o -name "*.test.ts" | head -20
