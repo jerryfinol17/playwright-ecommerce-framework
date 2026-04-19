@@ -71,3 +71,5 @@ jobs:
             videos/
             screenshots/
           retention-days: 14
+      - name: Debug - List test files
+        run: find . -name "*.spec.ts" -o -name "*.test.ts" | head -20
