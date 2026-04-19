@@ -1,0 +1,84 @@
+name: CI - Playwright Automation Exercise Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - chromium
+          - firefox
+          - webkit
+          - edge
+          - iPhone 13
+          - Pixel 8
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers + deps
+        run: npx playwright install --with-deps
+
+      - name: Run tests - ${{ matrix.project }}
+        run: npx playwright test --project="${{ matrix.project }}"
+        env:
+          CI: "true"
+          BASE_URL:             ${{ secrets.BASE_URL }}
+          INCORRECT_USER:       ${{ secrets.INCORRECT_USER }}
+          INCORRECT_PASSWORD:   ${{ secrets.INCORRECT_PASSWORD }}
+          NEW_USER_NAME:        ${{ secrets.NEW_USER_NAME }}
+          NEW_USER_DAY:         ${{ secrets.NEW_USER_DAY }}
+          NEW_USER_MONTH:       ${{ secrets.NEW_USER_MONTH }}
+          NEW_USER_YEAR:        ${{ secrets.NEW_USER_YEAR }}
+          NEW_USER_FIRST_NAME:  ${{ secrets.NEW_USER_FIRST_NAME }}
+          NEW_USER_LAST_NAME:   ${{ secrets.NEW_USER_LAST_NAME }}
+          NEW_USER_ADDRESS1:    ${{ secrets.NEW_USER_ADDRESS1 }}
+          NEW_USER_COUNTRY:     ${{ secrets.NEW_USER_COUNTRY }}
+          NEW_USER_STATE:       ${{ secrets.NEW_USER_STATE }}
+          NEW_USER_CITY:        ${{ secrets.NEW_USER_CITY }}
+          NEW_USER_ZIPCODE:     ${{ secrets.NEW_USER_ZIPCODE }}
+          NEW_USER_MOBILE:      ${{ secrets.NEW_USER_MOBILE }}
+
+      # ==================== ARTIFACTS ====================
+      - name: Upload HTML Report - ${{ matrix.project }}
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report-${{ matrix.project }}
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload Monocart Report - ${{ matrix.project }}
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monocart-report-${{ matrix.project }}
+          path: coverage-report/
+          retention-days: 30
+
+      - name: Upload Failure Artifacts - ${{ matrix.project }}
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-${{ matrix.project }}
+          path: test-results/
+          retention-days: 14

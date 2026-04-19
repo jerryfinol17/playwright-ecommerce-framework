@@ -93,6 +93,7 @@ export class CartPage extends BasePage {
     async removeItemByName(productName: string): Promise<void> {
         const row = this.cartRows.filter({ hasText: productName });
         await row.locator('.cart_quantity_delete').click();
+        await row.waitFor({ state: 'detached', timeout: 8000 });
     }
 
     async expectCartEmpty(): Promise<boolean> {
