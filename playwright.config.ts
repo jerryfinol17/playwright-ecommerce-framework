@@ -44,19 +44,6 @@ export default defineConfig({
                 headless: true
             },
         },
-
-        {
-            name: 'e2e-recorded',
-            testMatch: '**/E2ETest.spec.ts',
-            use: {
-                ...devices['Desktop Chrome'],
-                viewport:  { width: 1280, height: 720 },
-                headless:  false,
-                video:     'on',
-                launchOptions: { slowMo: 300 },
-            },
-        },
-
         {
             name: 'firefox',
             use: { ...devices['Desktop Firefox'],
