@@ -30,7 +30,7 @@ export default defineConfig({
         screenshot: 'only-on-failure',
         video:      'retain-on-failure',
         headless:   true,
-        baseURL:    'https://www.saucedemo.com',
+        baseURL:    'https://www.automationexercise.com/',
         launchOptions: { slowMo: 80 }
     },
 
@@ -40,7 +40,8 @@ export default defineConfig({
             name: 'chromium',
             use: {
                 ...devices['Desktop Chrome'],
-                viewport: { width: 1920, height: 1080 }
+                viewport: { width: 1920, height: 1080 },
+                headless: true
             },
         },
 
@@ -58,25 +59,31 @@ export default defineConfig({
 
         {
             name: 'firefox',
-            use: { ...devices['Desktop Firefox'] },
+            use: { ...devices['Desktop Firefox'],
+            headless:  true,},
+
         },
         {
             name: 'webkit',
-            use: { ...devices['Desktop Safari'] },
+            use: { ...devices['Desktop Safari'],
+            headless:  true,},
         },
         {
             name: 'edge',
-            use: { ...devices['Desktop Edge'] },
+            use: { ...devices['Desktop Edge'],
+            headless:  true,},
         },
 
          //Mobile Devices
         {
             name: 'iPhone 13',
-            use: { ...devices['iPhone 13'] },
+            use: { ...devices['iPhone 13'],
+            headless:  true,},
         },
         {
             name: 'Pixel 8',
-            use: { ...devices['Pixel 8'] },
+            use: { ...devices['Pixel 8'],
+            headless:  true,},
         },
     ],
 });
