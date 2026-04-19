@@ -35,7 +35,7 @@ export default defineConfig({
     },
 
     projects: [
-        // Desktop Browsers
+         // Desktop Browsers
         {
             name: 'chromium',
             use: {
