@@ -46,31 +46,33 @@ export class HomePage extends BasePage {
     }
 
     async goToSignUpLogin(): Promise<void> {
-        await this.clickAndWaitForNavigation(this.signupLoginLink);
+        await this.clickAndNavigateTo(this.signupLoginLink, '**/login**');
     }
 
     async goToProducts(): Promise<void> {
-        await this.clickAndWaitForNavigation(this.productsLink);
+        await this.clickAndNavigateTo(this.productsLink, '**/products**');
     }
 
     async goToCart(): Promise<void> {
-        await this.clickAndWaitForNavigation(this.cartLink);
+        await this.clickAndNavigateTo(this.cartLink, '**/view_cart**');
     }
 
     async goToContactUs(): Promise<void> {
-        await this.clickAndWaitForNavigation(this.contactUsLink);
+        await this.clickAndNavigateTo(this.contactUsLink, '**/contact_us**');
     }
-
 
     async gotoHome(): Promise<void> {
-        await this.clickAndWaitForNavigation(this.homeLink);
+        await this.clickAndNavigateTo(this.homeLink, BASE_URL);
     }
+
     async gotoTestCases(): Promise<void> {
-        await this.clickAndWaitForNavigation(this.testCases)
+        await this.clickAndNavigateTo(this.testCases, '**/test_cases**');
     }
+
     async isOnTestCasesPage(): Promise<boolean> {
         return this.assertCurrentUrlContain('test_cases');
     }
+
     private readonly loggedInAs = this.page.locator('#header').getByText(/Logged in as/i);
 
     async isLoggedIn(): Promise<boolean> {
@@ -225,6 +227,6 @@ export class HomePage extends BasePage {
     }
 
     async goHomeFromContact(): Promise<void> {
-        await this.clickAndWaitForNavigation(this.contactUsHomeLink);
+        await this.clickAndNavigateTo(this.contactUsHomeLink, BASE_URL);
     }
 }

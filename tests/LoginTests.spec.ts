@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures';
+import { test, expect } from '../fixtures/fixtures';
 import { CREDENTIALS, NEW_USER } from '../pages/config';
 
 function generateUniqueUser() {

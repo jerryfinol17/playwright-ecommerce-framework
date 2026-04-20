@@ -1,4 +1,4 @@
-import {test, expect} from "./fixtures";
+import {test, expect} from "../fixtures/fixtures";
 import {NEW_USER} from "../pages/config";
 
 test('HomePage', async ({homePage}) => {

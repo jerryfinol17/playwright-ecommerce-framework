@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures';
+import { test, expect } from '../fixtures/fixtures';
 import { createUserData, registerUser } from '../helpers/userHelpers';
 
 // TC10: Verify Subscription in home page

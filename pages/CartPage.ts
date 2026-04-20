@@ -21,9 +21,9 @@ export class CartPage extends BasePage {
     private readonly orderComment            = this.page.locator('textarea[name="message"]');
 
     // Tabla del carrito
-    private readonly cartTable = this.page.locator('#cart_info_table');
-    private readonly cartRows  = this.cartTable.locator('tbody tr');
-    private readonly goToSingup = this.page.getByRole('link', { name: 'Register / Login' })
+    private readonly cartTable  = this.page.locator('#cart_info_table');
+    private readonly cartRows   = this.cartTable.locator('tbody tr');
+    private readonly goToSingup = this.page.getByRole('link', { name: 'Register / Login' });
 
     // Payment
     private readonly nameOnCard       = this.page.locator('input[name="name_on_card"]');
@@ -32,7 +32,7 @@ export class CartPage extends BasePage {
     private readonly expiryMonth      = this.page.getByRole('textbox', { name: 'MM' });
     private readonly expiryYear       = this.page.getByRole('textbox', { name: 'YYYY' });
     private readonly payAndConfirmBtn = this.page.getByRole('button', { name: 'Pay and Confirm Order' });
-    private readonly continueBtn = this.page.getByRole('link', { name: 'Continue', exact: true });
+    private readonly continueBtn      = this.page.getByRole('link', { name: 'Continue', exact: true });
 
     // ==================== URL ASSERTIONS ====================
     async isOnCartPage(): Promise<boolean> {
@@ -107,10 +107,12 @@ export class CartPage extends BasePage {
 
     // ==================== CHECKOUT FLOW ====================
     async goToSingUpFromCart(): Promise<void> {
-        await this.clickElement(this.goToSingup)
+        await this.clickElement(this.goToSingup);
     }
+
     async proceedToCheckout(): Promise<void> {
-        await this.proceedToCheckoutButton.click();
+        // waitForURL guarantees /checkout is fully loaded before the caller asserts
+        await this.clickAndNavigateTo(this.proceedToCheckoutButton, '**/checkout**');
     }
 
     async addOrderComment(comment: string): Promise<void> {
@@ -118,7 +120,8 @@ export class CartPage extends BasePage {
     }
 
     async placeOrder(): Promise<void> {
-        await this.placeOrderButton.click();
+        // navigates to /payment
+        await this.clickAndNavigateTo(this.placeOrderButton, '**/payment**');
     }
 
     // ==================== PAYMENT ====================
@@ -137,7 +140,8 @@ export class CartPage extends BasePage {
     }
 
     async payAndConfirmOrder(): Promise<void> {
-        await this.payAndConfirmBtn.click();
+        // navigates to /payment_done (partial match via glob)
+        await this.clickAndNavigateTo(this.payAndConfirmBtn, '**/payment_done**', { timeout: 20000 });
     }
 
     async clickContinueAfterOrder(): Promise<void> {

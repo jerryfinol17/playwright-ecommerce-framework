@@ -47,11 +47,12 @@ export class LoginPage extends BasePage {
     private readonly signupErrorMsg = this.page.getByText('Email Address already exist!');
 
     // Logout
-    private readonly logout = this.page.getByRole('link', { name: ' Logout' })
+    private readonly logout = this.page.getByRole('link', { name: ' Logout' });
 
-    //Delete
-    private  readonly deleteAccount = this.page.getByRole('link', { name: ' Delete Account' });
+    // Delete
+    private readonly deleteAccount    = this.page.getByRole('link', { name: ' Delete Account' });
     private readonly deleteAccountMsg = this.page.getByText('Account Deleted!');
+
     // ==================== URL ASSERTIONS ====================
     async isOnLoginPage(): Promise<boolean> {
         return this.assertCurrentUrlContain('login');
@@ -83,13 +84,14 @@ export class LoginPage extends BasePage {
 
     // ================= LOGOUT && DELETE ==========================
     async clickLogout(): Promise<void> {
-        await this.clickElement(this.logout)
+        await this.clickElement(this.logout);
     }
 
     async clickDeleteAccount(): Promise<void> {
-        await this.clickElement(this.deleteAccount)
+        await this.clickElement(this.deleteAccount);
     }
-    async expectAccountDeleted():Promise<boolean>{
+
+    async expectAccountDeleted(): Promise<boolean> {
         try {
             await this.deleteAccountMsg.waitFor({ state: 'visible', timeout: 10000 });
             return true;
@@ -102,7 +104,8 @@ export class LoginPage extends BasePage {
     async signupNewUser(name: string, email: string): Promise<void> {
         await this.signupName.fill(name);
         await this.signupEmail.fill(email);
-        await this.clickElement(this.signupButton);
+        // waitForURL guarantees we are on /signup before proceeding — no race condition
+        await this.clickAndNavigateTo(this.signupButton, '**/signup**');
     }
 
     async expectSignupError(): Promise<boolean> {
@@ -113,10 +116,12 @@ export class LoginPage extends BasePage {
             return false;
         }
     }
+
     async cleanSignupFields(): Promise<void> {
         await this.signupName.clear();
         await this.signupEmail.clear();
     }
+
     async cleanLoginFields(): Promise<void> {
         await this.loginEmail.clear();
         await this.loginPassword.clear();
@@ -162,7 +167,8 @@ export class LoginPage extends BasePage {
 
     // ==================== CREAR CUENTA ====================
     async clickCreateAccount(): Promise<void> {
-        await this.createAccountButton.click();
+        // waitForURL guarantees /account_created is loaded before the caller continues
+        await this.clickAndNavigateTo(this.createAccountButton, '**/account_created**', { timeout: 20000 });
     }
 
     async expectAccountCreatedSuccess(): Promise<boolean> {
@@ -182,10 +188,10 @@ export class LoginPage extends BasePage {
     // ==================== FLUJO COMPLETO ====================
     async createNewUserFullFlow(name: string, email: string, accountData: AccountCreationData): Promise<void> {
         await this.signupNewUser(name, email);
-        expect(await this.isOnSingUpPage()).toBe(true);
+        // URL assert removed: waitForURL inside signupNewUser already guarantees /signup is loaded
         await this.fillAccountCreationForm(accountData);
         await this.clickCreateAccount();
-        expect(await this.isOnCreatedPage()).toBe(true);
+        // URL assert removed: waitForURL inside clickCreateAccount already guarantees /account_created is loaded
         expect(await this.expectAccountCreatedSuccess()).toBe(true);
         await this.clickContinueAfterAccountCreated();
     }

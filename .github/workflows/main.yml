@@ -11,6 +11,7 @@ jobs:
     name: ${{ matrix.project }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    environment: CI
 
     strategy:
       fail-fast: false
@@ -39,13 +40,37 @@ jobs:
       - name: Install Playwright browsers + deps
         run: npx playwright install --with-deps
 
+      - name: Debug - verify env & test files
+        run: |
+          echo "=== Secrets check (true = set, false = missing) ==="
+          echo "BASE_URL set:            ${{ secrets.BASE_URL != '' }}"
+          echo "INCORRECT_USER set:      ${{ secrets.INCORRECT_USER != '' }}"
+          echo "NEW_USER_NAME set:       ${{ secrets.NEW_USER_NAME != '' }}"
+          echo "=== Spec files found ==="
+          find . -name "*.spec.ts" | sort
+          echo "=== Node & Playwright versions ==="
+          node --version
+          npx playwright --version
+
       - name: Run tests on ${{ matrix.project }}
         run: npx playwright test --project="${{ matrix.project }}"
         env:
           CI: "true"
-
-      - name: Debug - List test files
-        run: find . -name "*.spec.ts" -o -name "*.test.ts" | head -20
+          BASE_URL: ${{ secrets.BASE_URL }}
+          INCORRECT_USER: ${{ secrets.INCORRECT_USER }}
+          INCORRECT_PASSWORD: ${{ secrets.INCORRECT_PASSWORD }}
+          NEW_USER_NAME: ${{ secrets.NEW_USER_NAME }}
+          NEW_USER_DAY: ${{ secrets.NEW_USER_DAY }}
+          NEW_USER_MONTH: ${{ secrets.NEW_USER_MONTH }}
+          NEW_USER_YEAR: ${{ secrets.NEW_USER_YEAR }}
+          NEW_USER_FIRST_NAME: ${{ secrets.NEW_USER_FIRST_NAME }}
+          NEW_USER_LAST_NAME: ${{ secrets.NEW_USER_LAST_NAME }}
+          NEW_USER_ADDRESS1: ${{ secrets.NEW_USER_ADDRESS1 }}
+          NEW_USER_COUNTRY: ${{ secrets.NEW_USER_COUNTRY }}
+          NEW_USER_STATE: ${{ secrets.NEW_USER_STATE }}
+          NEW_USER_CITY: ${{ secrets.NEW_USER_CITY }}
+          NEW_USER_ZIPCODE: ${{ secrets.NEW_USER_ZIPCODE }}
+          NEW_USER_MOBILE: ${{ secrets.NEW_USER_MOBILE }}
 
       - name: Upload HTML Report - ${{ matrix.project }}
         if: always()
@@ -68,8 +93,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: failure-${{ matrix.project }}
-          path: |
-            test-results/
-            videos/
-            screenshots/
+          path: test-results/
           retention-days: 14
+          if-no-files-found: ignore

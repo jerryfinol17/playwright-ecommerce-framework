@@ -94,16 +94,25 @@ export abstract class BasePage {
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForTimeout(800);
     }
-    // BasePage.ts
 
-    protected async clickAndWaitForNavigation(
+    protected async clickAndNavigateTo(
         locator: string | Locator,
+        urlPattern?: string | RegExp,
         options: { force?: boolean; timeout?: number } = {}
     ): Promise<void> {
-        await Promise.all([
-            this.page.waitForNavigation({ waitUntil: 'networkidle', timeout: options.timeout ?? 15000 }),
-            this.clickElement(locator, options)
-        ]);
+        const timeout = options.timeout ?? 15000;
+
+        if (urlPattern) {
+            await Promise.all([
+                this.page.waitForURL(urlPattern, { waitUntil: 'networkidle', timeout }),
+                this.clickElement(locator, options),
+            ]);
+        } else {
+            await Promise.all([
+                this.page.waitForNavigation({ waitUntil: 'networkidle', timeout }),
+                this.clickElement(locator, options),
+            ]);
+        }
     }
 
     // ============== Evidence =========================

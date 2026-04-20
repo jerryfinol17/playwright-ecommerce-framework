@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures';
+import { test, expect } from '../fixtures/fixtures';
 import { createUserData } from '../helpers/userHelpers';
 
 // TC8: Verify All Products and product detail page
@@ -77,7 +77,7 @@ test('TC21 - Add review on product', async ({ homePage, productsPage }) => {
     await homePage.goToProducts();
     await expect(productsPage.isOnProductPage()).resolves.toBe(true);
 
-    await productsPage.goToProduct();
+    await productsPage.goToFirstProduct();
     await productsPage.submitReview(user.new_user_name, user.new_user_email, 'Es un gran producto, muchas gracias!');
     await expect(productsPage.verifySuccessMsg()).resolves.toBe(true);
 });

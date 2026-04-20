@@ -17,20 +17,20 @@ export class ProductsPage extends BasePage {
     private readonly reviewEmailInput   = this.page.getByRole('textbox', { name: 'Email Address', exact: true });
     private readonly reviewTextArea     = this.page.getByRole('textbox', { name: 'Add Review Here!' });
     private readonly submitReviewButton = this.page.getByRole('button', { name: 'Submit' });
-    private readonly successMsg = this.page.getByText('Thank you for your review.')
+    private readonly successMsg         = this.page.getByText('Thank you for your review.');
 
     // ==================== PRODUCT DETAIL LOCATORS ====================
     private readonly productTitle     = this.page.locator('.product-information h2');
     private readonly productPrice     = this.page.locator('.product-information span span');
-
     private readonly brandText        = this.page.locator('.product-information p').filter({ hasText: 'Brand' });
     private readonly availabilityText = this.page.locator('.product-information p').filter({ hasText: 'Availability' });
     private readonly conditionText    = this.page.locator('.product-information p').filter({ hasText: 'Condition' });
 
     // ==================== SEARCH LOCATORS ====================
     private readonly searchInput  = this.page.locator('#search_product');
-    private readonly viewProduct = this.page.getByRole('link', { name: ' View Product' })
-    private readonly searchButton = this.page.locator('#submit_search')
+    private readonly viewProduct  = this.page.getByRole('link', { name: ' View Product' });
+    private readonly searchButton = this.page.locator('#submit_search');
+
     // ==================== NAVEGACIÓN ====================
 
     async isOnProductPage(): Promise<boolean> {
@@ -43,8 +43,8 @@ export class ProductsPage extends BasePage {
             .locator('a[href*="product_details"]')
             .first();
 
-        await viewProductLink.waitFor({ state: 'visible', timeout: 10000 });
-        await viewProductLink.click();
+        // waitForURL uses a partial glob since the product id varies (/product_details/N)
+        await this.clickAndNavigateTo(viewProductLink, '**/product_details/**');
     }
 
     // ==================== LISTA DE PRODUCTOS ====================
@@ -67,25 +67,31 @@ export class ProductsPage extends BasePage {
         await productCard.hover();
         await productCard.locator('a.add-to-cart').click();
     }
+    async goToFirstProduct(): Promise<void> {
+        const firstViewProduct = this.page.locator('a[href*="product_details"]').first();
+        await this.clickAndNavigateTo(firstViewProduct, '**/product_details/**');
+    }
 
     // ==================== BÚSQUEDA ====================
 
     async searchProduct(productName: string): Promise<void> {
         await this.fillInput(this.searchInput, productName);
         await this.page.waitForTimeout(300);
-        await this.clickAndWaitForNavigation(this.searchButton)
+        // URL stays at /products after search (query param added), so glob matches both cases
+        await this.clickAndNavigateTo(this.searchButton, '**/products**');
         await this.page.locator('h2.title.text-center', { hasText: 'Searched Products' })
             .waitFor({ state: 'visible', timeout: 15000 });
     }
-    async getSearchResultNames(): Promise<string[]> {
 
+    async getSearchResultNames(): Promise<string[]> {
         const names = await this.page.locator('.productinfo p').allInnerTexts();
         return names.map(n => n.trim()).filter(Boolean);
     }
 
-    async goToProduct(): Promise<void>{
-        await this.clickElement(this.viewProduct);
+    async goToProduct(): Promise<void> {
+        await this.clickAndNavigateTo(this.viewProduct, '**/product_details/**');
     }
+
     async addSearchResultToCart(): Promise<void> {
         const productCard = this.page.locator('.features_items .productinfo').first();
         await productCard.hover();
@@ -123,7 +129,7 @@ export class ProductsPage extends BasePage {
     }
 
     async addToCart(): Promise<void> {
-        await this.clickElement(this.addToCartButton, {force: true, timeout: 15000});
+        await this.clickElement(this.addToCartButton, { force: true, timeout: 15000 });
         await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 15000 });
     }
 
@@ -150,7 +156,8 @@ export class ProductsPage extends BasePage {
         await this.reviewTextArea.fill(reviewText);
         await this.clickElement(this.submitReviewButton);
     }
-    async verifySuccessMsg():Promise<boolean>{
+
+    async verifySuccessMsg(): Promise<boolean> {
         try {
             await this.successMsg.waitFor({ state: 'visible', timeout: 15000 });
             return true;
@@ -158,6 +165,7 @@ export class ProductsPage extends BasePage {
             return false;
         }
     }
+
     // ==================== BRANDS ====================
     private readonly brandsHeading = this.page.getByRole('heading', { name: 'Brands' });
 
