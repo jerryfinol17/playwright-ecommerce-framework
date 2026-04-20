@@ -51,6 +51,8 @@ jobs:
           echo "=== Node & Playwright versions ==="
           node --version
           npx playwright --version
+      - name: Create empty .env for CI
+        run: touch .env
 
       - name: Run tests on ${{ matrix.project }}
         run: npx playwright test --project="${{ matrix.project }}"
