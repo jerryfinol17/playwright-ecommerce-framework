@@ -104,12 +104,12 @@ export abstract class BasePage {
 
         if (urlPattern) {
             await Promise.all([
-                this.page.waitForURL(urlPattern, { waitUntil: 'networkidle', timeout }),
+                this.page.waitForURL(urlPattern, { waitUntil: 'networkidle' }),
                 this.clickElement(locator, options),
             ]);
         } else {
             await Promise.all([
-                this.page.waitForNavigation({ waitUntil: 'networkidle', timeout }),
+                this.page.waitForNavigation({ waitUntil: 'networkidle' }),
                 this.clickElement(locator, options),
             ]);
         }
