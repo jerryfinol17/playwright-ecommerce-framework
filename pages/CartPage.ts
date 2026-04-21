@@ -111,8 +111,8 @@ export class CartPage extends BasePage {
     }
 
     async proceedToCheckout(): Promise<void> {
-        // waitForURL guarantees /checkout is fully loaded before the caller asserts
         await this.clickAndNavigateTo(this.proceedToCheckoutButton, '**/checkout**');
+        await this.waitForLoad()
     }
 
     async addOrderComment(comment: string): Promise<void> {
