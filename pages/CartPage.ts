@@ -112,7 +112,7 @@ export class CartPage extends BasePage {
 
     async proceedToCheckout(): Promise<void> {
         await this.clickAndNavigateTo(this.proceedToCheckoutButton, '**/checkout**');
-        await this.waitForPageLoad()
+        await this.waitForPageLoad();
     }
 
     async addOrderComment(comment: string): Promise<void> {
