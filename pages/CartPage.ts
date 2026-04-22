@@ -15,7 +15,7 @@ export class CartPage extends BasePage {
     }
 
     // ==================== LOCATORS ====================
-    private readonly proceedToCheckoutButton = this.page.getByText('Proceed To Checkout').first();
+    private readonly proceedToCheckoutButton = this.page.locator('.btn.btn-default.check_out');
     private readonly placeOrderButton        = this.page.getByRole('link', { name: 'Place Order' });
     private readonly emptyCartMessage        = this.page.getByText('Cart is empty! Click here to buy products.');
     private readonly orderComment            = this.page.locator('textarea[name="message"]');
@@ -23,7 +23,7 @@ export class CartPage extends BasePage {
     // Tabla del carrito
     private readonly cartTable  = this.page.locator('#cart_info_table');
     private readonly cartRows   = this.cartTable.locator('tbody tr');
-    private readonly goToSingup = this.page.getByRole('link', { name: 'Register / Login' });
+    private readonly goToSingUp = this.page.getByRole('link', { name: 'Register / Login' })
 
     // Payment
     private readonly nameOnCard       = this.page.locator('input[name="name_on_card"]');
@@ -107,12 +107,15 @@ export class CartPage extends BasePage {
 
     // ==================== CHECKOUT FLOW ====================
     async goToSingUpFromCart(): Promise<void> {
-        await this.clickElement(this.goToSingup);
+        await this.waitForVisible(this.goToSingUp)
+        await this.isVisible(this.goToSingUp)
+        await this.clickAndNavigateTo(this.goToSingUp, '**/login**');
     }
 
     async proceedToCheckout(): Promise<void> {
-        // waitForURL guarantees /checkout is fully loaded before the caller asserts
-        await this.clickAndNavigateTo(this.proceedToCheckoutButton, '**/checkout**');
+        await this.waitForVisible(this.proceedToCheckoutButton)
+        await this.isVisible(this.proceedToCheckoutButton)
+        await this.clickElement(this.proceedToCheckoutButton, {force: true, timeout: 1500});
     }
 
     async addOrderComment(comment: string): Promise<void> {
@@ -120,7 +123,8 @@ export class CartPage extends BasePage {
     }
 
     async placeOrder(): Promise<void> {
-        // navigates to /payment
+        await this.waitForVisible(this.placeOrderButton)
+        await this.isVisible(this.placeOrderButton)
         await this.clickAndNavigateTo(this.placeOrderButton, '**/payment**');
     }
 
@@ -140,13 +144,15 @@ export class CartPage extends BasePage {
     }
 
     async payAndConfirmOrder(): Promise<void> {
-        // navigates to /payment_done (partial match via glob)
+        await this.waitForVisible(this.payAndConfirmBtn)
+        await this.isVisible(this.payAndConfirmBtn)
         await this.clickAndNavigateTo(this.payAndConfirmBtn, '**/payment_done**', { timeout: 20000 });
     }
 
     async clickContinueAfterOrder(): Promise<void> {
-        await this.continueBtn.waitFor({ state: 'visible', timeout: 15000 });
-        await this.continueBtn.click();
+        await this.waitForVisible(this.continueBtn)
+        await this.isVisible(this.continueBtn)
+        await this.clickElement(this.continueBtn)
     }
 
     // ==================== ASSERTS ====================

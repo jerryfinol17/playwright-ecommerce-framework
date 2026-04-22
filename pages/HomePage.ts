@@ -214,7 +214,9 @@ export class HomePage extends BasePage {
 
     async submitContactForm(): Promise<void> {
         this.page.once('dialog', dialog => dialog.accept());
-        await this.contactUsSubmitBtn.click();
+        await this.waitForVisible(this.contactUsSubmitBtn);
+        await this.isVisible(this.contactUsSubmitBtn);
+        await this.clickElement(this.contactUsSubmitBtn);
     }
 
     async isContactSuccessVisible(): Promise<boolean> {
@@ -227,6 +229,8 @@ export class HomePage extends BasePage {
     }
 
     async goHomeFromContact(): Promise<void> {
+        await this.waitForVisible(this.contactUsLink)
+        await this.isVisible(this.contactUsLink)
         await this.clickAndNavigateTo(this.contactUsHomeLink, BASE_URL);
     }
 }

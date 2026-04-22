@@ -86,7 +86,7 @@ export abstract class BasePage {
 
     protected async goto(url: string): Promise<void> {
         await this.blockAds()
-        await this.page.goto(url, {waitUntil: 'networkidle'});
+        await this.page.goto(url, {waitUntil: 'load'});
         await this.waitForPageLoad();
     }
     protected async waitForPageLoad() {
@@ -100,16 +100,19 @@ export abstract class BasePage {
         urlPattern?: string | RegExp,
         options: { force?: boolean; timeout?: number } = {}
     ): Promise<void> {
-        const timeout = options.timeout ?? 15000;
+        const timeout = options.timeout ?? 10000;
 
         if (urlPattern) {
             await Promise.all([
-                this.page.waitForURL(urlPattern, { waitUntil: 'networkidle', timeout }),
+                this.waitForVisible(locator, timeout),
+                this.isVisible(locator),
                 this.clickElement(locator, options),
+                this.page.waitForURL(urlPattern,{waitUntil: "load"}),
             ]);
         } else {
             await Promise.all([
-                this.page.waitForNavigation({ waitUntil: 'networkidle', timeout }),
+                this.waitForVisible(locator, timeout),
+                this.isVisible(locator),
                 this.clickElement(locator, options),
             ]);
         }

@@ -132,6 +132,7 @@ test('cart page', async ({homePage, loginPage, productsPage, cartPage}) => {
     await cartPage.clickContinueAfterOrder()
     await expect(homePage.isOnHomePage()).resolves.toBe(true)
     await productsPage.addToCartByName('Blue Top')
+    await expect(productsPage.isContinueBtnVisible()).resolves.toBe(true)
     await productsPage.continueShopping()
     await homePage.goToCart()
     await expect(cartPage.isOnCartPage()).resolves.toBe(true)

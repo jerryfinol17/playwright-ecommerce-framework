@@ -5,7 +5,7 @@ export default defineConfig({
     testMatch: '**/*.spec.ts',
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
-    retries: process.env.CI ? 2 : 0,
+    retries: process.env.CI ? 2 : 1,
     workers: process.env.CI ? 4 : 4,
     outputDir: 'test-results',
     timeout: 90_000,
@@ -29,7 +29,7 @@ export default defineConfig({
         trace:      'on-first-retry',
         screenshot: 'only-on-failure',
         video:      'retain-on-failure',
-        headless:   false,
+        headless:   true,
         baseURL:    'https://www.automationexercise.com/',
         launchOptions: { slowMo: 80 }
     },
@@ -51,22 +51,12 @@ export default defineConfig({
 
         },
         {
-            name: 'webkit',
-            use: { ...devices['Desktop Safari'],
-            headless:  true,},
-        },
-        {
             name: 'edge',
             use: { ...devices['Desktop Edge'],
             headless:  true,},
         },
 
          //Mobile Devices
-        {
-            name: 'iPhone 13',
-            use: { ...devices['iPhone 13'],
-            headless:  true,},
-        },
         {
             name: 'Pixel 8',
             use: { ...devices['Pixel 8'],

@@ -42,8 +42,6 @@ export class ProductsPage extends BasePage {
             .filter({ hasText: productName })
             .locator('a[href*="product_details"]')
             .first();
-
-        // waitForURL uses a partial glob since the product id varies (/product_details/N)
         await this.clickAndNavigateTo(viewProductLink, '**/product_details/**');
     }
 
@@ -65,7 +63,7 @@ export class ProductsPage extends BasePage {
             .first();
 
         await productCard.hover();
-        await productCard.locator('a.add-to-cart').click();
+        await productCard.locator('a.add-to-cart').click({force: true});
     }
     async goToFirstProduct(): Promise<void> {
         const firstViewProduct = this.page.locator('a[href*="product_details"]').first();
@@ -95,7 +93,7 @@ export class ProductsPage extends BasePage {
     async addSearchResultToCart(): Promise<void> {
         const productCard = this.page.locator('.features_items .productinfo').first();
         await productCard.hover();
-        await productCard.locator('a.add-to-cart').click();
+        await productCard.locator('a.add-to-cart').click({force:true});
         await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 15000 });
     }
 
@@ -134,8 +132,9 @@ export class ProductsPage extends BasePage {
     }
 
     async continueShopping(): Promise<void> {
-        await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 15000 });
-        await this.continueShoppingBtn.click({ force: true, timeout: 15000 });
+        await this.waitForVisible(this.continueShoppingBtn, 10000)
+        await this.isVisible(this.continueShoppingBtn)
+        await this.clickElement(this.continueShoppingBtn, { force: true, timeout: 10000 });
         await this.continueShoppingBtn.waitFor({ state: 'hidden', timeout: 8000 });
     }
 

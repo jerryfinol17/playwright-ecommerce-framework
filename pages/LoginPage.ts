@@ -161,14 +161,13 @@ export class LoginPage extends BasePage {
 
     // ==================== SMOKE TEST — FORM VACÍO ====================
     async expectEmptyFormDoesNotSubmit(): Promise<boolean> {
-        await this.createAccountButton.click();
+        await this.clickElement(this.createAccountButton);
         return (await this.isOnSingUpPage());
     }
 
     // ==================== CREAR CUENTA ====================
     async clickCreateAccount(): Promise<void> {
-        // waitForURL guarantees /account_created is loaded before the caller continues
-        await this.clickAndNavigateTo(this.createAccountButton, '**/account_created**', { timeout: 20000 });
+        await this.clickAndNavigateTo(this.createAccountButton);
     }
 
     async expectAccountCreatedSuccess(): Promise<boolean> {
@@ -182,16 +181,16 @@ export class LoginPage extends BasePage {
     }
 
     async clickContinueAfterAccountCreated(): Promise<void> {
-        await this.continueButton.click();
+        await this.waitForVisible(this.continueButton)
+        await this.isVisible(this.continueButton)
+        await this.clickElement(this.continueButton)
     }
 
     // ==================== FLUJO COMPLETO ====================
     async createNewUserFullFlow(name: string, email: string, accountData: AccountCreationData): Promise<void> {
         await this.signupNewUser(name, email);
-        // URL assert removed: waitForURL inside signupNewUser already guarantees /signup is loaded
         await this.fillAccountCreationForm(accountData);
         await this.clickCreateAccount();
-        // URL assert removed: waitForURL inside clickCreateAccount already guarantees /account_created is loaded
         expect(await this.expectAccountCreatedSuccess()).toBe(true);
         await this.clickContinueAfterAccountCreated();
     }

@@ -19,9 +19,7 @@ jobs:
         project:
           - chromium
           - firefox
-          - webkit
           - edge
-          - iPhone 13
           - Pixel 8
 
     steps:

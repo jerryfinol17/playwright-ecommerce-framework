@@ -109,7 +109,6 @@ test('TC20 - Search Products and Verify Cart After Login', async ({ homePage, pr
     await homePage.goToProducts();
     await expect(productsPage.isOnProductPage()).resolves.toBe(true);
 
-    // Agregar desde búsqueda sin estar logueado
     for (const term of searchTerms) {
         await productsPage.searchProduct(term);
         await productsPage.addSearchResultToCart();
