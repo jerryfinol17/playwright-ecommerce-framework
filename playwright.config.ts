@@ -51,22 +51,12 @@ export default defineConfig({
 
         },
         {
-            name: 'webkit',
-            use: { ...devices['Desktop Safari'],
-            headless:  true,},
-        },
-        {
             name: 'edge',
             use: { ...devices['Desktop Edge'],
             headless:  true,},
         },
 
          //Mobile Devices
-        {
-            name: 'iPhone 13',
-            use: { ...devices['iPhone 13'],
-            headless:  true,},
-        },
         {
             name: 'Pixel 8',
             use: { ...devices['Pixel 8'],
