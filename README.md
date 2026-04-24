@@ -188,18 +188,18 @@ Create a `.env` file in the root (optional — all values have fallbacks):
 BASE_URL=https://www.automationexercise.com/
 INCORRECT_USER=yourtest@test.com
 INCORRECT_PASSWORD=wrongpassword
-NEW_USER_NAME=Juan Carlos
-NEW_USER_FIRST_NAME=Juan Carlos
-NEW_USER_LAST_NAME=Bodoque
-NEW_USER_ADDRESS1=123 Test Street
-NEW_USER_COUNTRY=United States
-NEW_USER_STATE=New York
-NEW_USER_CITY=Konoha
-NEW_USER_ZIPCODE=10001
-NEW_USER_MOBILE=1234567890
-NEW_USER_DAY=15
-NEW_USER_MONTH=7
-NEW_USER_YEAR=1995
+NEW_USER_NAME= yourdata
+NEW_USER_FIRST_NAME=yourdata
+NEW_USER_LAST_NAME=yourdata
+NEW_USER_ADDRESS1=yourdata
+NEW_USER_COUNTRY=yourdata
+NEW_USER_STATE=yourdata
+NEW_USER_CITY=yourdata
+NEW_USER_ZIPCODE=yourdata
+NEW_USER_MOBILE=yourdata
+NEW_USER_DAY=yourdata
+NEW_USER_MONTH=yourdata
+NEW_USER_YEAR=yourdata
 ```
 
 ---
