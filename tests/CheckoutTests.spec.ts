@@ -12,7 +12,6 @@ async function addProductsToCart(productsPage: any, homePage: any) {
     const indicesToAdd = [0, 5, 11];
     for (const index of indicesToAdd) {
         await productsPage.addToCartByName(names[index]);
-        await productsPage.continueShopping();
     }
 }
 

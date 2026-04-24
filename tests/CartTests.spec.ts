@@ -37,7 +37,6 @@ test('TC12 - Add Products in Cart', async ({ homePage, productsPage, cartPage })
 
     for (const index of indicesToAdd) {
         await productsPage.addToCartByName(names[index]);
-        await productsPage.continueShopping();
     }
 
     await homePage.goToCart();
@@ -66,7 +65,6 @@ test('TC13 - Verify Product quantity in Cart', async ({ homePage, productsPage, 
     await productsPage.goToProductByName('Blue top');
     await productsPage.setQuantity(4);
     await productsPage.addToCart();
-    await productsPage.continueShopping();
 
     await homePage.goToCart();
     await expect(cartPage.isOnCartPage()).resolves.toBe(true);
@@ -87,7 +85,6 @@ test('TC17 - Remove Products From Cart', async ({ homePage, productsPage, cartPa
 
     for (const index of indicesToAdd) {
         await productsPage.addToCartByName(names[index]);
-        await productsPage.continueShopping();
     }
 
     await homePage.goToCart();
@@ -113,7 +110,6 @@ test('TC20 - Search Products and Verify Cart After Login', async ({ homePage, pr
     for (const term of searchTerms) {
         await productsPage.searchProduct(term);
         await productsPage.addSearchResultToCart();
-        await productsPage.continueShopping();
     }
 
     await homePage.goToCart();

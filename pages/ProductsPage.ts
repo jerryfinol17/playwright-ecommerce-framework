@@ -31,6 +31,33 @@ export class ProductsPage extends BasePage {
     private readonly viewProduct  = this.page.getByRole('link', { name: ' View Product' });
     private readonly searchButton = this.page.locator('#submit_search');
 
+    // ==================== PRIVATE CORE: ADD TO CART WITH RETRY ====================
+
+    private async addToCartWithRetry(
+        clickAction: () => Promise<void>,
+        label: string,
+        maxRetries = 5
+    ): Promise<void> {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            await clickAction();
+
+            if (await this.isContinueBtnVisible()) {
+                await this.clickElement(this.continueShoppingBtn, { force: true, timeout: 15000 });
+                await this.continueShoppingBtn.waitFor({ state: 'hidden', timeout: 8000 });
+                console.log(`🛒 Agregado al carrito: ${label}`);
+                return;
+            }
+
+            console.warn(`⚠️ Intento ${attempt}/${maxRetries} - Modal no apareció para: ${label}`);
+
+            if (attempt === maxRetries) {
+                throw new Error(`❌ No se pudo agregar al carrito después de ${maxRetries} intentos: ${label}`);
+            }
+
+            await this.page.waitForTimeout(1000 * attempt); // backoff: 1s, 2s, 3s
+        }
+    }
+
     // ==================== NAVEGACIÓN ====================
 
     async isOnProductPage(): Promise<boolean> {
@@ -42,9 +69,12 @@ export class ProductsPage extends BasePage {
             .filter({ hasText: productName })
             .locator('a[href*="product_details"]')
             .first();
-
-        // waitForURL uses a partial glob since the product id varies (/product_details/N)
         await this.clickAndNavigateTo(viewProductLink, '**/product_details/**');
+    }
+
+    async goToFirstProduct(): Promise<void> {
+        const firstViewProduct = this.page.locator('a[href*="product_details"]').first();
+        await this.clickAndNavigateTo(firstViewProduct, '**/product_details/**');
     }
 
     // ==================== LISTA DE PRODUCTOS ====================
@@ -64,12 +94,13 @@ export class ProductsPage extends BasePage {
             .filter({ hasText: productName })
             .first();
 
-        await productCard.hover();
-        await productCard.locator('a.add-to-cart').click();
-    }
-    async goToFirstProduct(): Promise<void> {
-        const firstViewProduct = this.page.locator('a[href*="product_details"]').first();
-        await this.clickAndNavigateTo(firstViewProduct, '**/product_details/**');
+        await this.addToCartWithRetry(
+            async () => {
+                await productCard.hover({force: true});
+                await productCard.locator('a.add-to-cart').click({ force: true });
+            },
+            productName
+        );
     }
 
     // ==================== BÚSQUEDA ====================
@@ -77,7 +108,6 @@ export class ProductsPage extends BasePage {
     async searchProduct(productName: string): Promise<void> {
         await this.fillInput(this.searchInput, productName);
         await this.page.waitForTimeout(300);
-        // URL stays at /products after search (query param added), so glob matches both cases
         await this.clickAndNavigateTo(this.searchButton, '**/products**');
         await this.page.locator('h2.title.text-center', { hasText: 'Searched Products' })
             .waitFor({ state: 'visible', timeout: 15000 });
@@ -94,9 +124,14 @@ export class ProductsPage extends BasePage {
 
     async addSearchResultToCart(): Promise<void> {
         const productCard = this.page.locator('.features_items .productinfo').first();
-        await productCard.hover();
-        await productCard.locator('a.add-to-cart').click();
-        await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 15000 });
+
+        await this.addToCartWithRetry(
+            async () => {
+                await productCard.hover({force: true});
+                await productCard.locator('a.add-to-cart').click({ force: true });
+            },
+            'search result (first)'
+        );
     }
 
     // ==================== DETALLE DE PRODUCTO ====================
@@ -129,14 +164,12 @@ export class ProductsPage extends BasePage {
     }
 
     async addToCart(): Promise<void> {
-        await this.clickElement(this.addToCartButton, { force: true, timeout: 15000 });
-        await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 15000 });
-    }
-
-    async continueShopping(): Promise<void> {
-        await this.continueShoppingBtn.waitFor({ state: 'visible', timeout: 15000 });
-        await this.continueShoppingBtn.click({ force: true, timeout: 15000 });
-        await this.continueShoppingBtn.waitFor({ state: 'hidden', timeout: 8000 });
+        await this.addToCartWithRetry(
+            async () => {
+                await this.clickElement(this.addToCartButton, { force: true, timeout: 15000 });
+            },
+            await this.productTitle.innerText().catch(() => 'product detail page')
+        );
     }
 
     async isContinueBtnVisible(): Promise<boolean> {

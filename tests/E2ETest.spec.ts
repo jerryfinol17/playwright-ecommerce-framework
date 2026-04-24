@@ -65,7 +65,6 @@ test('E2E - Full Shopping Flow', async ({ homePage, loginPage, productsPage, car
     // ==================== 4. Agregar la primera tanda al carrito ====================
     for (const productName of firstBatch) {
         await productsPage.addToCartByName(productName);
-        await productsPage.continueShopping();
         console.log(`🛒 Agregado al carrito: ${productName}`);
     }
 
@@ -103,7 +102,6 @@ test('E2E - Full Shopping Flow', async ({ homePage, loginPage, productsPage, car
 
     for (const productName of secondBatch) {
         await productsPage.addToCartByName(productName);
-        await productsPage.continueShopping();
         console.log(`🛒 Agregado al carrito: ${productName}`);
     }
 

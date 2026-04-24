@@ -27,8 +27,6 @@ test('ProductsPage', async ({homePage, productsPage, page}) => {
     const prices = await productsPage.getAllProductPrices()
     await expect(prices.length).toBeGreaterThan(5);
     await productsPage.addToCartByName('Blue Top');
-    await expect(productsPage.isContinueBtnVisible()).resolves.toBe(true);
-    await productsPage.continueShopping()
     await productsPage.searchProduct('Blue Top');
     await expect(productsPage.getSearchResultNames()).resolves.toContain('Blue Top');
     await page.goBack()
@@ -40,8 +38,6 @@ test('ProductsPage', async ({homePage, productsPage, page}) => {
     const productCondition = await productsPage.getCondition();
     console.log(productTitle, productPrice, productBrand, productAvailability,productCondition);
     await productsPage.addToCart();
-    await expect(productsPage.isContinueBtnVisible()).resolves.toBe(true);
-    await productsPage.continueShopping();
     await productsPage.submitReview('exampleUser','Examplemail@gmail.com','se ve como un buen producto!');
     await productsPage.takeScreenshot('review')
 })
@@ -107,7 +103,6 @@ test('cart page', async ({homePage, loginPage, productsPage, cartPage}) => {
     await expect(homePage.isOnHomePage()).resolves.toBe(true)
     await homePage.goToProducts()
     await productsPage.addToCartByName('Blue Top')
-    await productsPage.continueShopping()
     await homePage.goToCart()
     await expect(cartPage.isOnCartPage()).resolves.toBe(true)
     await expect(cartPage.expectCartEmpty()).resolves.toBe(false)
@@ -132,7 +127,6 @@ test('cart page', async ({homePage, loginPage, productsPage, cartPage}) => {
     await cartPage.clickContinueAfterOrder()
     await expect(homePage.isOnHomePage()).resolves.toBe(true)
     await productsPage.addToCartByName('Blue Top')
-    await productsPage.continueShopping()
     await homePage.goToCart()
     await expect(cartPage.isOnCartPage()).resolves.toBe(true)
     await cartPage.removeItemByName('Blue Top')
