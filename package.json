@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "claude": "^0.1.1",
+    "code": "^5.2.4",
+    "dotenv": "^17.4.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.0",
+    "@typescript-eslint/parser": "^8.58.0",
+    "monocart-reporter": "^2.10.1",
+    "playwright": "^1.59.1",
+    "typescript": "^6.0.2",
+    "v8-to-istanbul": "^9.3.0"
+  }
+}
