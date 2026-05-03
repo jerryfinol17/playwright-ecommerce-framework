@@ -1,13 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { ApiContext } from '../api';
 
-/**
- * API Smoke Test
- * Objetivo: verificar que BaseApi, parseo de responses, y los endpoints
- * principales responden como se espera ANTES de escribir tests formales.
- *
- * No son tests exhaustivos — son un "está todo vivo?" rápido.
- */
 
 const UNIQUE_EMAIL = `smoke_${Date.now()}@test.com`;
 
@@ -122,19 +115,17 @@ test.describe('🔥 API Smoke Tests', () => {
     });
 
     // ══════════════════════════════════════════════════════
-    // USER  — serial: los tests dependen del anterior
+    // USER
     // ══════════════════════════════════════════════════════
 
     test.describe.serial('UserApi', () => {
 
-        // beforeAll crea el usuario una sola vez para todo el bloque
         test.beforeAll(async ({ request }) => {
             const api = new ApiContext(request);
             await api.user.createAccount(TEST_USER);
             console.log(`   [setup] Usuario creado: ${TEST_USER.email}`);
         });
 
-        // afterAll limpia aunque algún test falle
         test.afterAll(async ({ request }) => {
             const api = new ApiContext(request);
             await api.user.deleteAccount(TEST_USER.email, TEST_USER.password);
@@ -142,15 +133,12 @@ test.describe('🔥 API Smoke Tests', () => {
         });
 
         test('POST /createAccount → 201, usuario creado', async ({ request }) => {
-            // El usuario ya fue creado en beforeAll — intentar crearlo de nuevo
-            // debe devolver 400 "Email already exist"
             const api      = new ApiContext(request);
             const response = await api.user.createAccount(TEST_USER);
 
             console.log(`   ✔ responseCode: ${response.responseCode}`);
             console.log(`   ✔ message     : ${response.message}`);
 
-            // 400 = email duplicado, confirma que el beforeAll funcionó
             expect(response.responseCode).toBe(400);
             api.user.assertMessageContains(response, 'exist');
         });

@@ -111,7 +111,7 @@ export class CartPage extends BasePage {
     }
 
     async proceedToCheckout(): Promise<void> {
-        await this.clickAndNavigateTo(this.proceedToCheckoutButton, '**/checkout**');
+        await this.clickAndNavigateTo(this.proceedToCheckoutButton);
         await this.waitForPageLoad();
     }
 
@@ -120,7 +120,6 @@ export class CartPage extends BasePage {
     }
 
     async placeOrder(): Promise<void> {
-        // navigates to /payment
         await this.clickAndNavigateTo(this.placeOrderButton, '**/payment**');
     }
 

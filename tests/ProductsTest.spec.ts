@@ -10,7 +10,7 @@ test('TC8 - Verify All Products and product detail page', async ({ homePage, pro
     const names = await productsPage.getAllProductNames();
     expect(names.length).toBeGreaterThan(0);
 
-    await productsPage.goToProduct();
+    await productsPage.goToFirstProduct();
 
     const title        = await productsPage.getProductTitle();
     const price        = await productsPage.getProductPrice();
