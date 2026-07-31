@@ -118,6 +118,19 @@ test.describe('🔥 API Smoke Tests', () => {
     // USER
     // ══════════════════════════════════════════════════════
 
+
+    test('POST /createAccount → 201, usuario creado', async ({ request }) => {
+        const api      = new ApiContext(request);
+        const response = await api.user.createAccount(TEST_USER);
+
+        console.log(`   ✔ responseCode: ${response.responseCode}`);
+        console.log(`   ✔ message     : ${response.message}`);
+
+        expect(response.responseCode).toBe(201);
+        api.user.assertMessageContains(response, 'User created!');
+        await api.user.deleteAccount(TEST_USER.email,TEST_USER.password);
+        console.log(`[teardown] Usuario eliminado: ${TEST_USER.email}`);
+    });
     test.describe.serial('UserApi', () => {
 
         test.beforeAll(async ({ request }) => {
@@ -130,17 +143,6 @@ test.describe('🔥 API Smoke Tests', () => {
             const api = new ApiContext(request);
             await api.user.deleteAccount(TEST_USER.email, TEST_USER.password);
             console.log(`   [teardown] Usuario eliminado: ${TEST_USER.email}`);
-        });
-
-        test('POST /createAccount → 201, usuario creado', async ({ request }) => {
-            const api      = new ApiContext(request);
-            const response = await api.user.createAccount(TEST_USER);
-
-            console.log(`   ✔ responseCode: ${response.responseCode}`);
-            console.log(`   ✔ message     : ${response.message}`);
-
-            expect(response.responseCode).toBe(400);
-            api.user.assertMessageContains(response, 'exist');
         });
 
         test('POST /verifyLogin con creds válidas → 200, user exists', async ({ request }) => {

@@ -2,10 +2,11 @@ name: CI - Playwright-Ecommerce-Framework
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
-
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 6 * * *'
 jobs:
   test:
     name: ${{ matrix.project }}
