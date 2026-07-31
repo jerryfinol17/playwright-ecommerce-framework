@@ -4,7 +4,7 @@
 
 ![Playwright](https://img.shields.io/badge/Playwright-TypeScript-2CA5E0?style=flat&logo=playwright&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?style=flat&logo=github-actions&logoColor=white)
+![GitHub Actions](https://img.shields.io/github/actions/workflow/status/jerryfinol17/playwright-ecommerce-framework/main.yml?style=for-the-badge&label=CI&logo=github-actions&logoColor=white)
 
 ---
 
