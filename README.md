@@ -218,18 +218,20 @@ I help startups and software teams build reliable automation solutions through:
 - UX-Oriented QA Reviews
 
 ---
-
 ## Let's Connect
 
-🌐 **Portfolio**  
-https://jerryfinol17.github.io/JerryFinolQA/
+<p align="center">
 
-💼 **LinkedIn**  
-https://www.linkedin.com/in/jerry-finol/
+<a href="mailto:jerrytest124@gmail.com">📧 Email</a> •
+<a href="https://linkedin.com/in/jerry-finol">💼 LinkedIn</a> •
+<a href="https://jerryfinol17.github.io/JerryFinolQA/">🌐 Portfolio</a>
 
-📧 **Email**  
-jerrytest124@gmail.com
+<br><br>
 
+<a href="https://x.com/JerryFinolQA">𝕏 X</a> •
+<a href="https://www.reddit.com/user/Jerry_Finol17/">👽 Reddit</a> •
+<a href="https://www.instagram.com/jerryfinolqa/">📷 Instagram</a>
+<a href="https://www.facebook.com/JerryFinolQA">📘 Facebook</a>
 ---
 
 > **Understand first. Test second. Explain always.**
